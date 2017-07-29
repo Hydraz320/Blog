@@ -1,0 +1,27 @@
+# React源码之初次渲染
+
+（本段提及代码详见ReactElement.js，这里就不为了好看而贴图了）
+
+ReactCompositeComponent是自定义组件(复合组件)，ReactDOMComponent指的是浏览器自带标签，ReactDOMTextComponent是针对文本节点的。三者面向的类型不同，但它们的挂载方法都叫做mountComponent(React做了很多的抽象封装，使各个函数功能能够处理各种结点等而不需要处处修改)。此外，我们通常所说的Virtual DOM 是ReactElement，并通过ReactDOM的render方法渲染到真实DOM上。
+
+那么为了实现渲染，究竟需要那些核心功能呢？
+
+首先一定需要一个component类，用来表示组件在渲染、更新、删除时应该做些什么事情；然后需要一个component工厂方法，用来返回一个component实例(这样就可以使返回实例可以屏蔽底层对具体类型的判断和处理)；另外需要mountComponent方法，用来在component渲染时生成DOM结构；最后还需要render方法作为渲染的入口方法，内部通过事务来触发挂载，将内容写入对应的container中去。
+
+那么具体来说，初次渲染是怎么一个流程呢？又是怎么利用这些核心功能的呢？
+
+我们知道React的虚拟DOM的概念，事实上，React.createElement就会创建一个这样的虚拟DOM。在React.createElement方法中，会首先检测config参数，而它包含着我们在使用React组件时可能会传入的ref、key(优化效率)、onClick等，此时ReactElement会将其保存为内部属性留与后用，然后，将其中的属性传入props保存，并且子元素children也会被保存到props。之后会调用ReactElement来返回虚拟DOM，而ReactElement貌似是个构造函数，实际上就是个工厂函数了，并且通过 $$typeof: REACT_ELEMENT_TYPE 来将其标记为ReactElement。当然，如果打debugger调试的话，也会并不意外的发现这些方法会recursive的调用，下面将要提到的instantiateReactComponent 也是一样，没办法，DOM树就这样嘛。(本段提及代码详见ReactElement.js)
+
+因为有了ReactElement，就需要将其渲染出来，也就来到了instantiateReactComponent方法。这个方法本质上也是工厂函数，并且在内部会对需要render的node类型进行判断，调用不同的方法来区别渲染。这样对于render而言，就不需要关心具体类型了。当然一个有意思的点是，ReactCompositeComponentWrapper作为ReactCompositeComponent的Wrapper，实际上就是assign了instantiateReactComponent方法，也就是说，对于不同的node，各自调用instantiateReactComponent就可以渲染各自的component实例了。当然啦，像我此时试验所用的<App />根组件就是返回的ReactCompositeComponentWrapper实例。
+
+这里继续看ReactCompositeComponent。不妨看看performInitialMount方法，它会在内部会调用componentWillMount钩子和_processPendingState，然后先将子ReactElement用_instantiateReactComponent渲染成child(ReactCompositeComponentWrapper)，接着再将其用ReactReconciler.mountComponent渲染成一个Markup。事实上，这个调和器也是类似前面的工厂函数一样，屏蔽了想要mount的component的类型，在内部仍旧统一调用了mountComponent，换句话说，Markup就是child.mountComponent。而Markup就是ReactDOMComponent，如果将其打印的话可以看到，它就是那个准备被insertBefore到真实DOM树的，哈哈。主要流程如下(其实还是蛮简化的，不过应该算是很重要的部分了吧)。
+
+![初次渲染主流程](https://github.com/Hydraz320/Blog/blob/master/images/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%B3%BB%E5%88%97/1.png?raw=true)
+
+在一篇文章上看到这样的图，相较而言更体现出instantiateReactComponent对不同元素类型的屏蔽，但是我画的完整一点吧。可留作参考。
+
+![参考的文章里的图](https://github.com/Hydraz320/Blog/blob/master/images/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%B3%BB%E5%88%97/2.png?raw=true)
+
+最后，既然上面已经出现了componentWillMount，可知，在我们终于要完成初次渲染的旅程时，一定会有componentDidMount，至于具体在哪，就不具体指出了。总之，现在想想过去面试常被问的生命周期，真不是什么上档次的问题…也难怪要是连这个都不懂，就得被pass啊。
+
+后续会对更完整的更新机制进一步做探究。
