@@ -12,7 +12,7 @@ Redux+Saga+Immutable好舒服。
 
 源码注释真的好看，对各个概念的解释不要太精准且容易理解。
 
->
+> createStore文件代码注释
  * Creates a Redux store that holds the state tree.
  * The only way to change the data in the store is to call `dispatch()` on it.
  *
