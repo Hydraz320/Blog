@@ -12,30 +12,21 @@ Redux+Saga+Immutable好舒服。
 
 源码注释真的好看，对各个概念的解释不要太精准且容易理解。
 
-> createStore文件代码注释
-> Creates a Redux store that holds the state tree.
-> The only way to change the data in the store is to call `dispatch()` on it.
->
-> There should only be a single store in your app. To specify how different
-> parts of the state tree respond to actions, you may combine several reducers
-> into a single reducer function by using `combineReducers`.
->
-> @param {Function} reducer A function that returns the next state tree, given
-> the current state tree and the action to handle.
->
-> @param {any} [preloadedState] The initial state. You may optionally specify it
-> to hydrate the state from the server in universal apps, or to restore a
-> previously serialized user session.
-> If you use `combineReducers` to produce the root reducer function, this must be
-> an object with the same shape as `combineReducers` keys.
->
-> @param {Function} [enhancer] The store enhancer. You may optionally specify it
-> to enhance the store with third-party capabilities such as middleware,
-> time travel, persistence, etc. The only store enhancer that ships with Redux
-> is `applyMiddleware()`.
->
-> @returns {Store} A Redux store that lets you read the state, dispatch actions
-> and subscribe to changes.
+> createStore文件代码注释翻译
+
+> 创建一个维护state tree的redux store。
+> 唯一改变store中数据的方法就是调用`dispatch()`。
+
+> 你的应用应当只有一个单一的store。为了指定state tree的不同部分如何与actions进行对应， 你可以利用`combineReducers`来combine若干个reducers以生成一个单一的reducer function。
+
+> @param {Function} reducer 是一个返回下一个state tree的函数，它会根据当前state tree和action来进行计算和处理。
+
+> @param {any} [preloadedState] 初始state。你可以选择在一个同构应用中从服务端获得一个状态，或者从先前存储在用户会话中的序列化的数据中取出。
+
+> 如果你使用`combineReducers`来创建一个根reducer function，那么这个初始state必须与`combineReducers`创建的对象的key值一一对应。 
+
+> @param {Function} [enhancer] store enhancer。 你可以使用如中间件、时间旅行、持久化等第三方功能来增强store。Redux自带的store enhancer只有`applyMiddleware()`。
+
+> @returns {Store} 一个让你可以读取状态的、触发action的、订阅变化的redux store对象。
  
-hahah
 
