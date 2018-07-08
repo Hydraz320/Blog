@@ -6,7 +6,7 @@ Redux+Saga+Immutable好舒服。
 
 ## src/utils/isPlainObject.js
 
-这个方法就是检测是不是一个普通对象，换句话说是不是用new Object()或者{}生成的。检测方法就是用Object.getPrototypeOf方法，这里涉及到继承原理方面的东西，可以看https://github.com/Hydraz320/FE.Note/blob/master/JS/%E7%BB%A7%E6%89%BF/oop-prototype.md 下面的图讲得很清楚了。蛮有趣的一段代码，先获取对象的指针，然后循环去找该对象的__proto__直到到达null，这种情况下plain object必然还是指向Object.prototype，而非plain object的__proto__就可能指向某个类的原型了。
+这个方法就是检测是不是一个普通对象，换句话说是不是用new Object()或者{}生成的。检测方法就是用Object.getPrototypeOf方法，这里涉及到继承原理方面的东西，可以看这篇[总结](https://github.com/Hydraz320/FE.Note/blob/master/JS/%E7%BB%A7%E6%89%BF/oop-prototype.md)，下面的图讲得很清楚了。蛮有趣的一段代码，先获取对象的指针，然后循环去找该对象的__proto__直到到达null，这种情况下plain object必然还是指向Object.prototype，而非plain object的__proto__就可能指向某个类的原型了。
 
 ## createStore.js
 
